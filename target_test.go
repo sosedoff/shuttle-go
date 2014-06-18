@@ -35,3 +35,7 @@ func Test_lockfilePath(t *testing.T) {
 func Test_repoPath(t *testing.T) {
   assert.Equal(t, target.repoPath(), "/var/www/app/repo")
 }
+
+func Test_versionFilePath(t *testing.T) {
+  assert.Equal(t, target.versionFilePath(), "/var/www/app/version")
+}

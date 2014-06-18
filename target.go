@@ -19,6 +19,10 @@ func (target *Target) releasesPath() string {
 	return fmt.Sprintf("%s/releases", target.path)
 }
 
+func (target *Target) versionFilePath() string {
+	return fmt.Sprintf("%s/version", target.path)
+}
+
 func (target *Target) sharedPath() string {
 	return fmt.Sprintf("%s/shared", target.path)
 }
