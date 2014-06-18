@@ -23,6 +23,10 @@ func (t *Target) versionFilePath() string {
 	return fmt.Sprintf("%s/version", t.path)
 }
 
+func (t *Target) revisionFilePath() string {
+	return fmt.Sprintf("%s/REVISION", t.path)
+}
+
 func (t *Target) sharedPath() string {
 	return fmt.Sprintf("%s/shared", t.path)
 }

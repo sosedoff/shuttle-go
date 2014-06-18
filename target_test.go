@@ -39,3 +39,7 @@ func Test_repoPath(t *testing.T) {
 func Test_versionFilePath(t *testing.T) {
   assert.Equal(t, target.versionFilePath(), "/var/www/app/version")
 }
+
+func Test_revisionFilePath(t *testing.T) {
+  assert.Equal(t, target.revisionFilePath(), "/var/www/app/REVISION")
+}
