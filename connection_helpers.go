@@ -17,5 +17,5 @@ func (conn *Connection) ProcessExists(pid string) bool {
 }
 
 func (conn *Connection) SvnInstalled() bool {
-  return conn.Exec("which svn").Success
+	return conn.Exec("which svn").Success
 }

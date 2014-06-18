@@ -30,11 +30,17 @@ func ParseYamlConfig(path string) *Config {
 }
 
 func (conf *Config) NewTarget() *Target {
+	deployPath := conf.Target["deploy_to"]
+
+	if deployPath == "" {
+		deployPath = conf.Target["path"]
+	}
+
 	return &Target{
 		host:     conf.Target["host"],
 		user:     conf.Target["user"],
 		password: conf.Target["password"],
-		path:     conf.Target["deploy_to"],
+		path:     deployPath,
 	}
 }
 

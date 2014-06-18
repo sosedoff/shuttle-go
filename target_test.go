@@ -1,49 +1,49 @@
 package main
 
-import(
-  "testing"
-  "github.com/stretchr/testify/assert"
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 var target = Target{
-  host: "localhost",
-  user: "user",
-  password: "password",
-  path: "/var/www/app",
+	host:     "localhost",
+	user:     "user",
+	password: "password",
+	path:     "/var/www/app",
 }
 
 func Test_getAddress(t *testing.T) {
-  assert.Equal(t, target.getAddress(), "localhost:22")
+	assert.Equal(t, target.getAddress(), "localhost:22")
 }
 
 func Test_releasesPath(t *testing.T) {
-  assert.Equal(t, target.releasesPath(), "/var/www/app/releases")
+	assert.Equal(t, target.releasesPath(), "/var/www/app/releases")
 }
 
 func Test_currentPath(t *testing.T) {
-  assert.Equal(t, target.currentPath(), "/var/www/app/current")
+	assert.Equal(t, target.currentPath(), "/var/www/app/current")
 }
 
 func Test_sharedPath(t *testing.T) {
-  assert.Equal(t, target.sharedPath(), "/var/www/app/shared")
+	assert.Equal(t, target.sharedPath(), "/var/www/app/shared")
 }
 
 func Test_backupsPath(t *testing.T) {
-  assert.Equal(t, target.backupsPath(), "/var/www/app/backups")
+	assert.Equal(t, target.backupsPath(), "/var/www/app/backups")
 }
 
 func Test_lockfilePath(t *testing.T) {
-  assert.Equal(t, target.lockfilePath(), "/var/www/app/lock")
+	assert.Equal(t, target.lockfilePath(), "/var/www/app/lock")
 }
 
 func Test_repoPath(t *testing.T) {
-  assert.Equal(t, target.repoPath(), "/var/www/app/repo")
+	assert.Equal(t, target.repoPath(), "/var/www/app/repo")
 }
 
 func Test_versionFilePath(t *testing.T) {
-  assert.Equal(t, target.versionFilePath(), "/var/www/app/version")
+	assert.Equal(t, target.versionFilePath(), "/var/www/app/version")
 }
 
 func Test_revisionFilePath(t *testing.T) {
-  assert.Equal(t, target.revisionFilePath(), "/var/www/app/REVISION")
+	assert.Equal(t, target.revisionFilePath(), "/var/www/app/REVISION")
 }
