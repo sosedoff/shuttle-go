@@ -38,7 +38,6 @@ func main() {
 	}
 
 	conn, err := NewConnection(&target)
-
 	conn.debug = options.Debug
 
 	if err != nil {

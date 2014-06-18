@@ -1,11 +1,8 @@
 package main
 
 type App struct {
-	name     string
-	strategy string
-	repo     string
-	target   *Target
-	conn     *Connection
+	target *Target
+	conn   *Connection
 }
 
 func NewApp(target *Target, conn *Connection) *App {
