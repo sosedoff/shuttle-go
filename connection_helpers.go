@@ -19,3 +19,7 @@ func (conn *Connection) ProcessExists(pid string) bool {
 func (conn *Connection) GitInstalled() bool {
 	return conn.Exec("which git").Success
 }
+
+func (conn *Connection) SvnInstalled() bool {
+	return conn.Exec("which svn").Success
+}
