@@ -15,6 +15,13 @@ type Connection struct {
 	ssh    *ssh.Client
 }
 
+type Command struct {
+	Output   string
+	ExitCode int
+	Success  bool
+	Error    error
+}
+
 func NewConnection(target *Target) (result *Connection, err error) {
 	privateKey := parsekey(privateKeyPath())
 
@@ -65,7 +72,7 @@ func (conn *Connection) NewSession() (session *ssh.Session, err error) {
 	return
 }
 
-func (conn *Connection) Run(command string) string {
+func (conn *Connection) Exec(command string) *Command {
 	session, err := conn.NewSession()
 	defer session.Close()
 
@@ -84,7 +91,16 @@ func (conn *Connection) Run(command string) string {
 		fmt.Println("Failed to run: ", err.Error())
 	}
 
-	return b.String()
+	return &Command{
+		Output:   b.String(),
+		ExitCode: 0, // FIXME
+		Success:  err == nil,
+		Error:    err,
+	}
+}
+
+func (conn *Connection) Run(command string) string {
+	return conn.Exec(command).Output
 }
 
 func privateKeyPath() string {
