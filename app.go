@@ -82,13 +82,22 @@ func (app *App) cloneRepository() bool {
 	}
 
 	if branch != "master" {
-		cmd = fmt.Sprintf("cd %s && git checkout %s", app.target.repoPath(), branch)
-		result = app.conn.Exec(cmd)
-
-		if !result.Success {
-			fmt.Println("Failed to checkout branch")
-			fmt.Print(result.Output)
+		if !app.checkoutBranch() {
+			return false
 		}
+	}
+
+	return result.Success
+}
+
+func (app *App) checkoutBranch() bool {
+	branch := app.config.getBranch()
+	cmd := fmt.Sprintf("cd %s && git checkout %s", app.target.repoPath(), branch)
+	result := app.conn.Exec(cmd)
+
+	if !result.Success {
+		fmt.Println("Failed to checkout branch")
+		fmt.Print(result.Output)
 	}
 
 	return result.Success
