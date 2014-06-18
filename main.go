@@ -12,6 +12,11 @@ var options struct {
 	Environment string `short:"e" long:"environment" description:"Deployment environment"`
 }
 
+func terminate(message string, status int) {
+	fmt.Println("Deployment it locked.")
+	os.Exit(1)
+}
+
 func main() {
 	args, err := flags.ParseArgs(&options, os.Args)
 
@@ -41,5 +46,18 @@ func main() {
 	}
 
 	app := NewApp(&target, conn)
+
+	if app.isLocked() {
+		terminate("Deployment is locked", 1)
+	}
+
+	if !app.writeLock() {
+		terminate("Unable to write lock", 2)
+	}
+
 	app.setupDirectoryStructure()
+
+	if !app.releaseLock() {
+		terminate("Unable to release lock", 2)
+	}
 }

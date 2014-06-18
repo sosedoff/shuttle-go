@@ -30,3 +30,15 @@ func (app *App) setupDirectoryStructure() {
 		app.conn.Run("mkdir -p " + path)
 	}
 }
+
+func (app *App) isLocked() bool {
+	return app.conn.FileExists(app.target.lockfilePath())
+}
+
+func (app *App) writeLock() bool {
+	return app.conn.Exec("touch " + app.target.lockfilePath()).Success
+}
+
+func (app *App) releaseLock() bool {
+	return app.conn.Exec("rm " + app.target.lockfilePath()).Success
+}

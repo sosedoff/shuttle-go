@@ -106,6 +106,10 @@ func (conn *Connection) Run(command string) string {
 	return conn.Exec(command).Output
 }
 
+func (conn *Connection) FileExists(path string) bool {
+	return conn.Exec("test -f " + path).Success
+}
+
 func privateKeyPath() string {
 	return fmt.Sprintf("%s/.ssh/id_rsa", os.Getenv("HOME"))
 }
