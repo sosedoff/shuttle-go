@@ -7,9 +7,9 @@ import (
 )
 
 var options struct {
-	Debug       string `long:"debug" description:"Enable debugging mode"`
-	File        string `long:"file" description:"Specify path to config"`
-	Environment string `long:"environment" description:"Deployment environment"`
+	Debug       bool   `short:"d" long:"debug" description:"Enable debugging mode"`
+	File        string `short:"f" long:"file" description:"Specify path to config"`
+	Environment string `short:"e" long:"environment" description:"Deployment environment"`
 }
 
 func main() {
@@ -33,6 +33,8 @@ func main() {
 	}
 
 	conn, err := NewConnection(&target)
+
+	conn.debug = options.Debug
 
 	if err != nil {
 		panic("Unable to establish connection")

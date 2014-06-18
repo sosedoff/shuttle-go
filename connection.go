@@ -45,8 +45,6 @@ func NewConnection(target *Target) (result *Connection, err error) {
 		ssh:    ssh,
 	}
 
-	result.debug = true
-
 	return
 }
 
