@@ -20,6 +20,10 @@ func Test_releasesPath(t *testing.T) {
   assert.Equal(t, target.releasesPath(), "/var/www/app/releases")
 }
 
+func Test_currentPath(t *testing.T) {
+  assert.Equal(t, target.currentPath(), "/var/www/app/current")
+}
+
 func Test_sharedPath(t *testing.T) {
   assert.Equal(t, target.sharedPath(), "/var/www/app/shared")
 }

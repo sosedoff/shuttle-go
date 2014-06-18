@@ -16,29 +16,33 @@ func (t *Target) getAddress() string {
 }
 
 func (t *Target) releasesPath() string {
-	return fmt.Sprintf("%s/releases", t.path)
+	return t.path + "/releases"
+}
+
+func (t *Target) currentPath() string {
+	return t.path + "/current"
 }
 
 func (t *Target) versionFilePath() string {
-	return fmt.Sprintf("%s/version", t.path)
+	return t.path + "/version"
 }
 
 func (t *Target) revisionFilePath() string {
-	return fmt.Sprintf("%s/REVISION", t.path)
+	return t.path + "/REVISION"
 }
 
 func (t *Target) sharedPath() string {
-	return fmt.Sprintf("%s/shared", t.path)
+	return t.path + "/shared"
 }
 
 func (t *Target) backupsPath() string {
-	return fmt.Sprintf("%s/backups", t.path)
+	return t.path + "/backups"
 }
 
 func (t *Target) lockfilePath() string {
-	return fmt.Sprintf("%s/lock", t.path)
+	return t.path + "/lock"
 }
 
 func (t *Target) repoPath() string {
-	return fmt.Sprintf("%s/repo", t.path)
+	return t.path + "/repo"
 }
