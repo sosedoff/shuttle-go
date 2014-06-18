@@ -30,6 +30,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	cmd := args[1]
+
 	config := ParseYamlConfig(options.File)
 	if config == nil {
 		terminate("Unable to parse config file", 1)
@@ -45,19 +47,33 @@ func main() {
 
 	conn.debug = options.Debug
 
-	app := NewApp(target, conn)
+	app := NewApp(target, conn, config)
 
-	if app.isLocked() {
-		terminate("Deployment is locked", 1)
+	if cmd == "deploy" {
+		if app.isLocked() {
+			terminate("Deployment is locked", 1)
+		}
+
+		app.setupDirectoryStructure()
+
+		if !app.writeLock() {
+			terminate("Unable to write lock", 2)
+		}
+
+		app.checkoutCode()
+
+		if !app.releaseLock() {
+			terminate("Unable to release lock", 2)
+		}
 	}
 
-	app.setupDirectoryStructure()
+	if cmd == "unlock" {
+		if !app.isLocked() {
+			return
+		}
 
-	if !app.writeLock() {
-		terminate("Unable to write lock", 2)
-	}
-
-	if !app.releaseLock() {
-		terminate("Unable to release lock", 2)
+		if !app.releaseLock() {
+			terminate("Unable to release lock", 2)
+		}
 	}
 }

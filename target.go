@@ -30,3 +30,7 @@ func (target *Target) backupsPath() string {
 func (target *Target) lockfilePath() string {
 	return fmt.Sprintf("%s/lock", target.path)
 }
+
+func (target *Target) repoPath() string {
+	return fmt.Sprintf("%s/repo", target.path)
+}
