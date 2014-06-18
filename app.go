@@ -53,15 +53,24 @@ func (app *App) checkoutCode() bool {
 	}
 
 	if app.conn.DirExists(app.target.repoPath()) {
-		return app.updateCode()
-	} else {
-		return app.cloneRepository()
+		// Check if repository remote has been changed
+		if app.gitRemoteChanged() {
+			fmt.Println("Git remote change detected.")
+
+			// Just remote the reposity, its easier
+			app.conn.Exec("rm -rf " + app.target.repoPath())
+		} else {
+			return app.updateCode()
+		}
 	}
+
+	return app.cloneRepository()
 }
 
 func (app *App) cloneRepository() bool {
 	fmt.Println("Cloning repository")
 
+	branch := app.config.getBranch()
 	cloneOpts := "--depth 25 --recursive --quiet"
 	cloneCmd := fmt.Sprintf("git clone %s %s repo", cloneOpts, app.config.App["repo"])
 	cmd := fmt.Sprintf("cd %s && %s", app.target.path, cloneCmd)
@@ -72,20 +81,38 @@ func (app *App) cloneRepository() bool {
 		fmt.Print(result.Output)
 	}
 
+	if branch != "master" {
+		cmd = fmt.Sprintf("cd %s && git checkout %s", app.target.repoPath(), branch)
+		result = app.conn.Exec(cmd)
+
+		if !result.Success {
+			fmt.Println("Failed to checkout branch")
+			fmt.Print(result.Output)
+		}
+	}
+
 	return result.Success
 }
 
 func (app *App) updateCode() bool {
 	fmt.Println("Updating code")
 
-	branch := "master" // FIXME: Read from config
+	branch := app.config.getBranch()
 	cmd := fmt.Sprintf("cd %s && git pull origin %s", app.target.repoPath(), branch)
 	result := app.conn.Exec(cmd)
 
 	if !result.Success {
-		fmt.Println("Failed to updated repository")
+		fmt.Println("Failed to update repository")
 		fmt.Print(result.Output)
 	}
 
 	return result.Success
+}
+
+// Returns true if existing git repository remote has been changed
+func (app *App) gitRemoteChanged() bool {
+	oldRemote := app.conn.GitRemote(app.target.repoPath())
+	newRemote := app.config.App["repo"]
+
+	return oldRemote != newRemote
 }

@@ -37,3 +37,13 @@ func (conf *Config) NewTarget() *Target {
 		path:     conf.Target["deploy_to"],
 	}
 }
+
+func (conf *Config) getBranch() string {
+	branch := conf.App["branch"]
+
+	if branch == "" {
+		branch = "master"
+	}
+
+	return branch
+}
