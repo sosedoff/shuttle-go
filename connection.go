@@ -16,10 +16,10 @@ type Connection struct {
 }
 
 type Command struct {
-	Output   string
-	ExitCode int
-	Success  bool
-	Error    error
+	Output     string
+	ExitStatus int
+	Success    bool
+	Error      error
 }
 
 func NewConnection(target *Target) (result *Connection, err error) {
@@ -74,6 +74,8 @@ func (conn *Connection) NewSession() (session *ssh.Session, err error) {
 
 func (conn *Connection) Exec(command string) *Command {
 	session, err := conn.NewSession()
+	exitStatus := 0
+
 	defer session.Close()
 
 	var b bytes.Buffer
@@ -88,14 +90,17 @@ func (conn *Connection) Exec(command string) *Command {
 	err = session.Run(command)
 
 	if err != nil {
-		fmt.Println("Failed to run: ", err.Error())
+		exitErr, ok := err.(*ssh.ExitError)
+		if ok {
+			exitStatus = exitErr.ExitStatus()
+		}
 	}
 
 	return &Command{
-		Output:   b.String(),
-		ExitCode: 0, // FIXME
-		Success:  err == nil,
-		Error:    err,
+		Output:     b.String(),
+		ExitStatus: exitStatus,
+		Success:    err == nil,
+		Error:      err,
 	}
 }
 
