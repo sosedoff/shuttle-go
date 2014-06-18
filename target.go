@@ -11,30 +11,30 @@ type Target struct {
 	path     string
 }
 
-func (target *Target) getAddress() string {
-	return fmt.Sprintf("%s:22", target.host)
+func (t *Target) getAddress() string {
+	return fmt.Sprintf("%s:22", t.host)
 }
 
-func (target *Target) releasesPath() string {
-	return fmt.Sprintf("%s/releases", target.path)
+func (t *Target) releasesPath() string {
+	return fmt.Sprintf("%s/releases", t.path)
 }
 
-func (target *Target) versionFilePath() string {
-	return fmt.Sprintf("%s/version", target.path)
+func (t *Target) versionFilePath() string {
+	return fmt.Sprintf("%s/version", t.path)
 }
 
-func (target *Target) sharedPath() string {
-	return fmt.Sprintf("%s/shared", target.path)
+func (t *Target) sharedPath() string {
+	return fmt.Sprintf("%s/shared", t.path)
 }
 
-func (target *Target) backupsPath() string {
-	return fmt.Sprintf("%s/backups", target.path)
+func (t *Target) backupsPath() string {
+	return fmt.Sprintf("%s/backups", t.path)
 }
 
-func (target *Target) lockfilePath() string {
-	return fmt.Sprintf("%s/lock", target.path)
+func (t *Target) lockfilePath() string {
+	return fmt.Sprintf("%s/lock", t.path)
 }
 
-func (target *Target) repoPath() string {
-	return fmt.Sprintf("%s/repo", target.path)
+func (t *Target) repoPath() string {
+	return fmt.Sprintf("%s/repo", t.path)
 }
