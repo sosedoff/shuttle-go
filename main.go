@@ -13,7 +13,7 @@ var options struct {
 }
 
 func terminate(message string, status int) {
-	fmt.Println("Deployment it locked.")
+	fmt.Println(message)
 	os.Exit(1)
 }
 
@@ -30,31 +30,32 @@ func main() {
 		os.Exit(1)
 	}
 
-	target := Target{
-		"192.168.33.10",
-		"vagrant",
-		"vagrant",
-		"/home/vagrant/app",
+	config := ParseYamlConfig(options.File)
+	if config == nil {
+		terminate("Unable to parse config file", 1)
 	}
 
-	conn, err := NewConnection(&target)
-	conn.debug = options.Debug
+	target := config.NewTarget()
+
+	conn, err := NewConnection(target)
 
 	if err != nil {
-		panic("Unable to establish connection")
+		terminate("Unable to establish connection", 1)
 	}
 
-	app := NewApp(&target, conn)
+	conn.debug = options.Debug
+
+	app := NewApp(target, conn)
 
 	if app.isLocked() {
 		terminate("Deployment is locked", 1)
 	}
 
+	app.setupDirectoryStructure()
+
 	if !app.writeLock() {
 		terminate("Unable to write lock", 2)
 	}
-
-	app.setupDirectoryStructure()
 
 	if !app.releaseLock() {
 		terminate("Unable to release lock", 2)

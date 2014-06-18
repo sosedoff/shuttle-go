@@ -36,6 +36,7 @@ func NewConnection(target *Target) (result *Connection, err error) {
 	ssh, err := ssh.Dial("tcp", target.getAddress(), config)
 
 	if err != nil {
+		fmt.Println(err)
 		result = nil
 		return
 	}

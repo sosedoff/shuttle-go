@@ -7,8 +7,9 @@ import (
 )
 
 type Config struct {
-	App   map[string]string
-	Hooks map[string]interface{}
+	App    map[string]string
+	Hooks  map[string]interface{}
+	Target map[string]string
 }
 
 func ParseYamlConfig(path string) *Config {
@@ -26,4 +27,13 @@ func ParseYamlConfig(path string) *Config {
 	}
 
 	return &config
+}
+
+func (conf *Config) NewTarget() *Target {
+	return &Target{
+		host:     conf.Target["host"],
+		user:     conf.Target["user"],
+		password: conf.Target["password"],
+		path:     conf.Target["deploy_to"],
+	}
 }

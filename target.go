@@ -15,22 +15,18 @@ func (target *Target) getAddress() string {
 	return fmt.Sprintf("%s:22", target.host)
 }
 
-func (target *Target) basePath() string {
-	return target.path
-}
-
 func (target *Target) releasesPath() string {
-	return fmt.Sprintf("%s/releases", target.basePath())
+	return fmt.Sprintf("%s/releases", target.path)
 }
 
 func (target *Target) sharedPath() string {
-	return fmt.Sprintf("%s/shared", target.basePath())
+	return fmt.Sprintf("%s/shared", target.path)
 }
 
 func (target *Target) backupsPath() string {
-	return fmt.Sprintf("%s/backups", target.basePath())
+	return fmt.Sprintf("%s/backups", target.path)
 }
 
 func (target *Target) lockfilePath() string {
-	return fmt.Sprintf("%s/lock", target.basePath())
+	return fmt.Sprintf("%s/lock", target.path)
 }

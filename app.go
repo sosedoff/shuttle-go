@@ -14,7 +14,7 @@ func NewApp(target *Target, conn *Connection) *App {
 
 func (app *App) setupDirectoryStructure() {
 	paths := []string{
-		app.target.basePath(),
+		app.target.path,
 		app.target.releasesPath(),
 		app.target.backupsPath(),
 		app.target.sharedPath(),
