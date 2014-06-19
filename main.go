@@ -9,16 +9,14 @@ import (
 var VERSION = "0.1.0"
 
 var options struct {
-	Debug       bool   `short:"d" long:"debug" description:"Enable debugging mode"`
-	File        string `short:"f" long:"file" description:"Specify path to config"`
-	Environment string `short:"e" long:"environment" description:"Deployment environment"`
+	Debug bool   `short:"d" long:"debug" description:"Enable debugging mode"`
+	File  string `short:"f" long:"file" description:"Specify path to config"`
 }
 
 func main() {
 	args, err := flags.ParseArgs(&options, os.Args)
 
 	if err != nil {
-		fmt.Println(err)
 		os.Exit(1)
 	}
 
