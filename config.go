@@ -43,7 +43,7 @@ func (conf *Config) NewTarget() *Target {
 		path:             deployPath,
 		releasesPath:     deployPath + "/releases",
 		currentPath:      deployPath + "/current",
-		versionFilePath:  deployPath + "/version",
+		versionFilePath:  deployPath + "/VERSION",
 		revisionFilePath: deployPath + "/REVISION",
 		sharedPath:       deployPath + "/shared",
 		backupsPath:      deployPath + "/backups",
