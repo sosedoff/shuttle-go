@@ -22,3 +22,7 @@ type Target struct {
 func (t *Target) getAddress() string {
 	return fmt.Sprintf("%s:22", t.host)
 }
+
+func (t *Target) toString() string {
+	return fmt.Sprintf("%s@%s", t.user, t.host)
+}

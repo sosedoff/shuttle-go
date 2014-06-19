@@ -6,6 +6,8 @@ import (
 	"os"
 )
 
+var VERSION = "0.1.0"
+
 var options struct {
 	Debug       bool   `short:"d" long:"debug" description:"Enable debugging mode"`
 	File        string `short:"f" long:"file" description:"Specify path to config"`
@@ -15,6 +17,15 @@ var options struct {
 func terminate(message string, status int) {
 	fmt.Println(message)
 	os.Exit(1)
+}
+
+func exitWithError(err error) {
+	fmt.Println(err)
+	os.Exit(1)
+}
+
+func logStep(str string) {
+	fmt.Printf("-----> %s\n", str)
 }
 
 func main() {
@@ -32,35 +43,51 @@ func main() {
 
 	cmd := args[1]
 
+	// Check if config file path has been provided
+	if options.File == "" {
+		terminate("Please provide config file", 1)
+	}
+
 	config := ParseYamlConfig(options.File)
 	if config == nil {
 		terminate("Unable to parse config file", 1)
 	}
 
-	target := config.NewTarget()
+	fmt.Printf("\nShuttle v%s\n\n", VERSION)
 
+	target := config.NewTarget()
 	conn, err := NewConnection(target)
 
 	if err != nil {
 		terminate("Unable to establish connection", 1)
 	}
-
 	conn.debug = options.Debug
 
+	logStep("Connected to " + target.toString())
+
 	app := NewApp(target, conn, config)
+
+	if err = app.initialize(); err != nil {
+		exitWithError(err)
+	}
 
 	if cmd == "deploy" {
 		if app.isLocked() {
 			terminate("Deployment is locked", 1)
 		}
 
+		// Create application deployment structure, directories, etc
+		logStep("Preparing application structure")
 		app.setupDirectoryStructure()
 
 		if !app.writeLock() {
 			terminate("Unable to write lock", 2)
 		}
 
-		app.checkoutCode()
+		// Clone repository or update codebase on specified deployment branch
+		if err = app.checkoutCode(); err != nil {
+			exitWithError(err)
+		}
 
 		if !app.releaseLock() {
 			terminate("Unable to release lock", 2)
