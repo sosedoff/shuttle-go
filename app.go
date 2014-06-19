@@ -21,12 +21,12 @@ func NewApp(target *Target, conn *Connection, config *Config) *App {
 func (app *App) setupDirectoryStructure() {
 	paths := []string{
 		app.target.path,
-		app.target.releasesPath(),
-		app.target.backupsPath(),
-		app.target.sharedPath(),
-		app.target.sharedPath() + "/logs",
-		app.target.sharedPath() + "/pids",
-		app.target.sharedPath() + "/tmp",
+		app.target.releasesPath,
+		app.target.backupsPath,
+		app.target.sharedPath,
+		app.target.sharedPath + "/logs",
+		app.target.sharedPath + "/pids",
+		app.target.sharedPath + "/tmp",
 	}
 
 	for _, path := range paths {
@@ -35,15 +35,15 @@ func (app *App) setupDirectoryStructure() {
 }
 
 func (app *App) isLocked() bool {
-	return app.conn.FileExists(app.target.lockfilePath())
+	return app.conn.FileExists(app.target.lockfilePath)
 }
 
 func (app *App) writeLock() bool {
-	return app.conn.Exec("touch " + app.target.lockfilePath()).Success
+	return app.conn.Exec("touch " + app.target.lockfilePath).Success
 }
 
 func (app *App) releaseLock() bool {
-	return app.conn.Exec("rm " + app.target.lockfilePath()).Success
+	return app.conn.Exec("rm " + app.target.lockfilePath).Success
 }
 
 func (app *App) checkoutCode() bool {
@@ -52,13 +52,13 @@ func (app *App) checkoutCode() bool {
 		return false
 	}
 
-	if app.conn.DirExists(app.target.repoPath()) {
+	if app.conn.DirExists(app.target.repoPath) {
 		// Check if repository remote has been changed
 		if app.gitRemoteChanged() {
 			fmt.Println("Git remote change detected.")
 
 			// Just remote the reposity, its easier
-			app.conn.Exec("rm -rf " + app.target.repoPath())
+			app.conn.Exec("rm -rf " + app.target.repoPath)
 		} else {
 			return app.updateCode()
 		}
@@ -92,7 +92,7 @@ func (app *App) cloneRepository() bool {
 
 func (app *App) checkoutBranch() bool {
 	branch := app.config.getBranch()
-	cmd := fmt.Sprintf("cd %s && git checkout %s", app.target.repoPath(), branch)
+	cmd := fmt.Sprintf("cd %s && git checkout %s", app.target.repoPath, branch)
 	result := app.conn.Exec(cmd)
 
 	if !result.Success {
@@ -107,7 +107,7 @@ func (app *App) updateCode() bool {
 	fmt.Println("Updating code")
 
 	branch := app.config.getBranch()
-	cmd := fmt.Sprintf("cd %s && git pull origin %s", app.target.repoPath(), branch)
+	cmd := fmt.Sprintf("cd %s && git pull origin %s", app.target.repoPath, branch)
 	result := app.conn.Exec(cmd)
 
 	if !result.Success {
@@ -120,7 +120,7 @@ func (app *App) updateCode() bool {
 
 // Returns true if existing git repository remote has been changed
 func (app *App) gitRemoteChanged() bool {
-	oldRemote := app.conn.GitRemote(app.target.repoPath())
+	oldRemote := app.conn.GitRemote(app.target.repoPath)
 	newRemote := app.config.App["repo"]
 
 	return oldRemote != newRemote

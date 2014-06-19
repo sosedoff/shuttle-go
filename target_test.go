@@ -15,35 +15,3 @@ var target = Target{
 func Test_getAddress(t *testing.T) {
 	assert.Equal(t, target.getAddress(), "localhost:22")
 }
-
-func Test_releasesPath(t *testing.T) {
-	assert.Equal(t, target.releasesPath(), "/var/www/app/releases")
-}
-
-func Test_currentPath(t *testing.T) {
-	assert.Equal(t, target.currentPath(), "/var/www/app/current")
-}
-
-func Test_sharedPath(t *testing.T) {
-	assert.Equal(t, target.sharedPath(), "/var/www/app/shared")
-}
-
-func Test_backupsPath(t *testing.T) {
-	assert.Equal(t, target.backupsPath(), "/var/www/app/backups")
-}
-
-func Test_lockfilePath(t *testing.T) {
-	assert.Equal(t, target.lockfilePath(), "/var/www/app/lock")
-}
-
-func Test_repoPath(t *testing.T) {
-	assert.Equal(t, target.repoPath(), "/var/www/app/repo")
-}
-
-func Test_versionFilePath(t *testing.T) {
-	assert.Equal(t, target.versionFilePath(), "/var/www/app/version")
-}
-
-func Test_revisionFilePath(t *testing.T) {
-	assert.Equal(t, target.revisionFilePath(), "/var/www/app/REVISION")
-}
