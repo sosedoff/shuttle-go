@@ -29,6 +29,7 @@ func (app *App) initialize() error {
 	return nil
 }
 
+// Creates directories necessary for other deployment steps
 func (app *App) setupDirectoryStructure() {
 	paths := []string{
 		app.target.path,
@@ -45,14 +46,18 @@ func (app *App) setupDirectoryStructure() {
 	}
 }
 
+// Returns true if remote server has a deployment lock file created by another
+// deployment process
 func (app *App) isLocked() bool {
 	return app.conn.FileExists(app.target.lockfilePath)
 }
 
+// Writes deployment lock file to prevent simultaneous deployments
 func (app *App) writeLock() bool {
 	return app.conn.Exec("touch " + app.target.lockfilePath).Success
 }
 
+// Removes deployment lock file after deployment sequience has been completed
 func (app *App) releaseLock() bool {
 	return app.conn.Exec("rm " + app.target.lockfilePath).Success
 }
