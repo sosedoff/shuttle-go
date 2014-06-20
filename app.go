@@ -95,9 +95,7 @@ func (app *App) cloneRepository() error {
 	}
 
 	if branch != "master" {
-		if err := app.checkoutBranch(); err != nil {
-			return err
-		}
+		return app.checkoutBranch()
 	}
 
 	return nil
