@@ -148,7 +148,7 @@ func (app *App) checkoutIndex() error {
 	}
 
 	cmd := fmt.Sprintf("echo %s > %s/REVISION", app.gitRevision(), app.currentReleasePath())
-	if result = app.conn.Exec(cmd); result != nil {
+	if result = app.conn.Exec(cmd); !result.Success {
 		return fmt.Errorf(result.Output)
 	}
 

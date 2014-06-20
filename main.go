@@ -76,8 +76,8 @@ func main() {
 			exitWithError(err)
 		}
 
-		if err = app.writeCurrentReleaseNumber(); err != nil {
-			app.cleanupCurrentRelease()
+		if err = app.symlinkCurrentRelease(); err != nil {
+			// TODO
 		}
 
 		if !app.releaseLock() {

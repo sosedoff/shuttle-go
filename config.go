@@ -37,18 +37,17 @@ func (conf *Config) NewTarget() *Target {
 	}
 
 	return &Target{
-		host:             conf.Target["host"],
-		user:             conf.Target["user"],
-		password:         conf.Target["password"],
-		path:             deployPath,
-		releasesPath:     deployPath + "/releases",
-		currentPath:      deployPath + "/current",
-		versionFilePath:  deployPath + "/VERSION",
-		revisionFilePath: deployPath + "/REVISION",
-		sharedPath:       deployPath + "/shared",
-		backupsPath:      deployPath + "/backups",
-		lockfilePath:     deployPath + "/lock",
-		repoPath:         deployPath + "/repo",
+		host:            conf.Target["host"],
+		user:            conf.Target["user"],
+		password:        conf.Target["password"],
+		path:            deployPath,
+		releasesPath:    deployPath + "/releases",
+		currentPath:     deployPath + "/current",
+		versionFilePath: deployPath + "/version",
+		sharedPath:      deployPath + "/shared",
+		backupsPath:     deployPath + "/backups",
+		lockfilePath:    deployPath + "/lock",
+		repoPath:        deployPath + "/repo",
 	}
 }
 

@@ -73,8 +73,8 @@ func (app *App) releaseLock() bool {
 // Write a new release number to the release file
 func (app *App) writeReleaseNumber(number int) error {
 	cmd := fmt.Sprintf("echo %d > %s", number, app.target.versionFilePath)
-	result := app.conn.Exec(cmd)
 
+	result := app.conn.Exec(cmd)
 	if !result.Success {
 		return fmt.Errorf(result.Output)
 	}
@@ -114,4 +114,48 @@ func (app *App) getLastReleaseNumber() int {
 // Removes current release if any of the deployment steps fails
 func (app *App) cleanupCurrentRelease() {
 	app.conn.Exec("rm -rf " + app.currentReleasePath())
+}
+
+func (app *App) symlinkCurrentRelease() error {
+	logStep("Linking release")
+
+	// If symlink already exists, unlink
+	if app.conn.SymlinkExists(app.target.currentPath) {
+		result := app.conn.Exec("unlink " + app.target.currentPath)
+
+		if !result.Success {
+			return fmt.Errorf(result.Output)
+		}
+	}
+
+	// If current is a directory, remove it
+	if app.conn.DirExists(app.target.currentPath) {
+		result := app.conn.Exec("rm -rf " + app.target.currentPath)
+
+		if !result.Success {
+			return fmt.Errorf(result.Output)
+		}
+	}
+
+	result := app.conn.Exec("ln -s " + app.currentReleasePath() + " " + app.target.currentPath)
+
+	if !result.Success {
+		return fmt.Errorf(result.Output)
+	}
+
+	// Write current version into RELEASE file
+	cmd := fmt.Sprintf("echo %d > %s/RELEASE", app.currentRelease, app.currentReleasePath())
+	if result = app.conn.Exec(cmd); !result.Success {
+		return fmt.Errorf(result.Output)
+	}
+
+	// Write current version into "version" file
+	if err := app.writeCurrentReleaseNumber(); err != nil {
+		return err
+	}
+
+	logStep(fmt.Sprintf("Release v%d has been deployed", app.currentRelease))
+	fmt.Println("")
+
+	return nil
 }
