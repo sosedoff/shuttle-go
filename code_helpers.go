@@ -43,6 +43,11 @@ func (app *App) checkoutCode() (err error) {
 		return
 	}
 
+	// Write index to the new release dir
+	if err = app.checkoutIndex(); err != nil {
+		return
+	}
+
 	return
 }
 
@@ -126,11 +131,26 @@ func (app *App) remoteChanged() bool {
 
 // Returns current git commit SHA
 func (app *App) gitRevision() string {
-	result := app.repoExec("git rev-parser HEAD")
+	result := app.repoExec("git rev-parse HEAD")
 
 	if result.Success {
 		return strings.TrimSpace(result.Output)
 	}
 
 	return ""
+}
+
+func (app *App) checkoutIndex() error {
+	result := app.repoExec("git checkout-index -a --prefix=" + app.currentReleasePath() + "/")
+
+	if !result.Success {
+		return fmt.Errorf(result.Output)
+	}
+
+	cmd := fmt.Sprintf("echo %s > %s/REVISION", app.gitRevision(), app.currentReleasePath())
+	if result = app.conn.Exec(cmd); result != nil {
+		return fmt.Errorf(result.Output)
+	}
+
+	return nil
 }

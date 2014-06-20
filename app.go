@@ -29,6 +29,10 @@ func (app *App) initialize() error {
 	return nil
 }
 
+func (app *App) currentReleasePath() string {
+	return fmt.Sprintf("%s/%d", app.target.releasesPath, app.currentRelease)
+}
+
 // Creates directories necessary for other deployment steps
 func (app *App) setupDirectoryStructure() error {
 	paths := []string{
@@ -67,8 +71,8 @@ func (app *App) releaseLock() bool {
 }
 
 // Write a new release number to the release file
-func (app *App) writeReleaseNumber(number string) error {
-	cmd := fmt.Sprintf("echo %s > %s", number, app.target.versionFilePath)
+func (app *App) writeReleaseNumber(number int) error {
+	cmd := fmt.Sprintf("echo %d > %s", number, app.target.versionFilePath)
 	result := app.conn.Exec(cmd)
 
 	if !result.Success {
@@ -76,6 +80,10 @@ func (app *App) writeReleaseNumber(number string) error {
 	}
 
 	return nil
+}
+
+func (app *App) writeCurrentReleaseNumber() error {
+	return app.writeReleaseNumber(app.currentRelease)
 }
 
 // Returns last deployed release number, stored in "version" file
@@ -101,4 +109,9 @@ func (app *App) getLastReleaseNumber() int {
 	}
 
 	return number
+}
+
+// Removes current release if any of the deployment steps fails
+func (app *App) cleanupCurrentRelease() {
+	app.conn.Exec("rm -rf " + app.currentReleasePath())
 }

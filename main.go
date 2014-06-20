@@ -76,6 +76,10 @@ func main() {
 			exitWithError(err)
 		}
 
+		if err = app.writeCurrentReleaseNumber(); err != nil {
+			app.cleanupCurrentRelease()
+		}
+
 		if !app.releaseLock() {
 			terminate("Unable to release lock", 2)
 		}
