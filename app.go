@@ -30,7 +30,7 @@ func (app *App) initialize() error {
 }
 
 // Creates directories necessary for other deployment steps
-func (app *App) setupDirectoryStructure() {
+func (app *App) setupDirectoryStructure() error {
 	paths := []string{
 		app.target.path,
 		app.target.releasesPath,
@@ -42,8 +42,12 @@ func (app *App) setupDirectoryStructure() {
 	}
 
 	for _, path := range paths {
-		app.conn.Run("mkdir -p " + path)
+		if result := app.conn.Exec("mkdir -p " + path); !result.Success {
+			return fmt.Errorf(result.Output)
+		}
 	}
+
+	return nil
 }
 
 // Returns true if remote server has a deployment lock file created by another
@@ -62,70 +66,6 @@ func (app *App) releaseLock() bool {
 	return app.conn.Exec("rm " + app.target.lockfilePath).Success
 }
 
-// Clone repository or update an existing one from the upstream
-func (app *App) checkoutCode() error {
-	// Do not proceed if git is not installed, its the only hard requirement
-	if !app.conn.GitInstalled() {
-		return fmt.Errorf("Git executable is not installed")
-	}
-
-	if app.conn.DirExists(app.target.repoPath) {
-		// Check if repository remote has changed.
-		// When remote changes its not always easy to switch remotes.
-		// In this case just remove the repo, its easier than updating it.
-		if app.gitRemoteChanged() {
-			app.conn.Exec("rm -rf " + app.target.repoPath)
-		} else {
-			return app.updateCode()
-		}
-	}
-
-	return app.cloneRepository()
-}
-
-func (app *App) cloneRepository() error {
-	branch := app.config.getBranch()
-	cloneOpts := "--depth 25 --recursive --quiet"
-	cloneCmd := fmt.Sprintf("git clone %s %s repo", cloneOpts, app.config.App["repo"])
-	cmd := fmt.Sprintf("cd %s && %s", app.target.path, cloneCmd)
-	result := app.conn.Exec(cmd)
-
-	if !result.Success {
-		return fmt.Errorf(result.Output)
-	}
-
-	if branch != "master" {
-		return app.checkoutBranch()
-	}
-
-	return nil
-}
-
-func (app *App) checkoutBranch() error {
-	branch := app.config.getBranch()
-	cmd := fmt.Sprintf("cd %s && git checkout %s", app.target.repoPath, branch)
-	result := app.conn.Exec(cmd)
-
-	if !result.Success {
-		return fmt.Errorf(result.Output)
-	}
-
-	return nil
-}
-
-// Pulls new changes from the upstream
-func (app *App) updateCode() error {
-	branch := app.config.getBranch()
-	cmd := fmt.Sprintf("cd %s && git pull origin %s", app.target.repoPath, branch)
-	result := app.conn.Exec(cmd)
-
-	if !result.Success {
-		return fmt.Errorf(result.Output)
-	}
-
-	return nil
-}
-
 // Write a new release number to the release file
 func (app *App) writeReleaseNumber(number string) error {
 	cmd := fmt.Sprintf("echo %s > %s", number, app.target.versionFilePath)
@@ -138,34 +78,15 @@ func (app *App) writeReleaseNumber(number string) error {
 	return nil
 }
 
-// Returns true if existing git repository remote has been changed
-func (app *App) gitRemoteChanged() bool {
-	oldRemote := app.conn.GitRemote(app.target.repoPath)
-	newRemote := app.config.App["repo"]
-
-	return oldRemote != newRemote
-}
-
-// Returns current git commit SHA
-func (app *App) gitRevision() string {
-	cmd := fmt.Sprintf("cd %s && git rev-parse HEAD", app.target.repoPath)
-	sha := strings.TrimSpace(app.conn.Run(cmd))
-
-	return sha
-}
-
 // Returns last deployed release number, stored in "version" file
 // Version file could only contain a numeric value
 func (app *App) getLastReleaseNumber() int {
-	// Return 0 as a non-release if version file does not exist or deployment
-	// directory/file structure has been broken
 	if !app.conn.FileExists(app.target.versionFilePath) {
 		return 0
 	}
 
 	value, err := app.conn.ReadFile(app.target.versionFilePath)
 
-	// If file cant be read we also need to return 0
 	if err != nil {
 		fmt.Println("Unable to read version file:", err)
 		return 0

@@ -8,11 +8,11 @@ import (
 
 var regexpGitRemote = regexp.MustCompile("origin\t+(.*)\\s\\(fetch\\)")
 
-func (conn *Connection) GitInstalled() bool {
+func (conn *Connection) gitInstalled() bool {
 	return conn.Exec("which git").Success
 }
 
-func (conn *Connection) GitRemote(path string) string {
+func (conn *Connection) gitRemote(path string) string {
 	result := conn.Exec(fmt.Sprintf("cd %s && git remote -v", path))
 
 	if !result.Success {

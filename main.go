@@ -62,7 +62,10 @@ func main() {
 
 		// Create application deployment structure, directories, etc
 		logStep("Preparing application structure")
-		app.setupDirectoryStructure()
+		if err = app.setupDirectoryStructure(); err != nil {
+			logStep("Failed to setup application structure")
+			exitWithError(err)
+		}
 
 		if !app.writeLock() {
 			terminate("Unable to write lock", 2)
