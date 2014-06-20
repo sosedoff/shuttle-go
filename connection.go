@@ -145,6 +145,16 @@ func (conn *Connection) ReadFile(path string) (content string, err error) {
 	return content, err
 }
 
+func (conn *Connection) CopyFile(src string, dst string) error {
+	result := conn.Exec("cp " + src + " " + "dst")
+
+	if !result.Success {
+		return fmt.Errorf(result.Output)
+	}
+
+	return nil
+}
+
 func privateKeyPath() string {
 	return fmt.Sprintf("%s/.ssh/id_rsa", os.Getenv("HOME"))
 }
