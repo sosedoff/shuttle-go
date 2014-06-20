@@ -33,8 +33,8 @@ func (app *App) currentReleasePath() string {
 	return fmt.Sprintf("%s/%d", app.target.releasesPath, app.currentRelease)
 }
 
-// Creates directories necessary for other deployment steps
-func (app *App) setupDirectoryStructure() error {
+// Setup application directory structure
+func (app *App) setup() error {
 	paths := []string{
 		app.target.path,
 		app.target.releasesPath,

@@ -40,6 +40,8 @@ func main() {
 	fmt.Printf("\nShuttle v%s\n\n", VERSION)
 
 	target := config.NewTarget()
+
+	logStep("Establishing connection with remote server")
 	conn, err := NewConnection(target)
 
 	if err != nil {
@@ -62,7 +64,7 @@ func main() {
 
 		// Create application deployment structure, directories, etc
 		logStep("Preparing application structure")
-		if err = app.setupDirectoryStructure(); err != nil {
+		if err = app.setup(); err != nil {
 			logStep("Failed to setup application structure")
 			exitWithError(err)
 		}
