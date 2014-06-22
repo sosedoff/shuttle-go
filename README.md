@@ -9,8 +9,8 @@ Shuttle is written in Go. You need to Go >= 1.2 to compile Shuttle.
 To compile run the following command:
 
 ```
-go get
-go build
+make setup
+make
 ```
 
 ## License
