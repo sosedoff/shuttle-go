@@ -13,6 +13,10 @@ var options struct {
 	File  string `short:"f" long:"file" description:"Specify path to config"`
 }
 
+func printVersion() {
+	fmt.Printf("\nShuttle v%s\n\n", VERSION)
+}
+
 func main() {
 	args, err := flags.ParseArgs(&options, os.Args)
 
@@ -27,9 +31,8 @@ func main() {
 
 	cmd := args[1]
 
-	// Check if config file path has been provided
 	if options.File == "" {
-		terminate("Please provide config file", 1)
+		terminate("Config file required", 1)
 	}
 
 	config := ParseYamlConfig(options.File)
@@ -37,7 +40,7 @@ func main() {
 		terminate("Unable to parse config file", 1)
 	}
 
-	fmt.Printf("\nShuttle v%s\n\n", VERSION)
+	printVersion()
 
 	target := config.NewTarget()
 
