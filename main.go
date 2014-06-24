@@ -81,8 +81,10 @@ func main() {
 			exitWithError(err)
 		}
 
+		// If current release cannot be symlinked, remove it
 		if err = app.symlinkCurrentRelease(); err != nil {
-			// TODO
+			app.cleanupCurrentRelease()
+			terminate("Unable to symlink current release", 3)
 		}
 
 		if !app.releaseLock() {
