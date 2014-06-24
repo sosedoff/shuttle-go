@@ -17,7 +17,7 @@ func printVersion() {
 	fmt.Printf("\nShuttle v%s\n\n", VERSION)
 }
 
-func main() {
+func realMain() {
 	args, err := flags.ParseArgs(&options, os.Args)
 
 	if err != nil {
@@ -76,6 +76,9 @@ func main() {
 			terminate("Unable to write lock", 2)
 		}
 
+		// Make sure to release lock after established connection
+		defer app.releaseLock()
+
 		// Clone repository or update codebase on specified deployment branch
 		if err = app.checkoutCode(); err != nil {
 			exitWithError(err)
@@ -86,19 +89,15 @@ func main() {
 			app.cleanupCurrentRelease()
 			terminate("Unable to symlink current release", 3)
 		}
-
-		if !app.releaseLock() {
-			terminate("Unable to release lock", 2)
-		}
 	}
 
 	if cmd == "unlock" {
 		if !app.isLocked() {
 			return
 		}
-
-		if !app.releaseLock() {
-			terminate("Unable to release lock", 2)
-		}
 	}
+}
+
+func main() {
+	realMain()
 }
