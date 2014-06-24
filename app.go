@@ -54,6 +54,11 @@ func (app *App) setup() error {
 	return nil
 }
 
+// Execute a command and return result
+func (app *App) Run(command string) *Command {
+	return app.conn.Exec(command)
+}
+
 // Returns true if remote server has a deployment lock file created by another
 // deployment process
 func (app *App) isLocked() bool {
