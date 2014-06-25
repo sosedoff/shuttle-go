@@ -60,6 +60,24 @@ func realMain() {
 		exitWithError(err)
 	}
 
+	if cmd == "setup" {
+		if app.isLocked() {
+			deployer := app.lastDeployer()
+			message := fmt.Sprintf("Deployment is locked by %s", deployer)
+
+			terminate(message, 1)
+		}
+
+		// Create application deployment structure, directories, etc
+		logStep("Preparing application structure")
+		if err = app.setup(); err != nil {
+			logStep("Failed to setup application structure")
+			exitWithError(err)
+		}
+
+		logStep("Application structure has been created")
+	}
+
 	if cmd == "deploy" {
 		if app.isLocked() {
 			deployer := app.lastDeployer()
