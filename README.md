@@ -13,6 +13,17 @@ make setup
 make
 ```
 
+## Command Reference
+
+```
+shuttle setup - Create application structure
+shuttle deploy - Run deployment from git repository
+shuttle lock - Lock deployment
+shuttle unlock - Unlock deployment
+shuttle connect - Connect via SSH (not implemented)
+shuttle rollback - Rollback to previous release (not implemented)
+```
+
 ## License
 
 The MIT License (MIT)
