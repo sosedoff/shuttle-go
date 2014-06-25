@@ -92,15 +92,36 @@ func realMain() {
 			app.cleanupCurrentRelease()
 			terminate("Unable to symlink current release", 3)
 		}
+
+		return
+	}
+
+	if cmd == "lock" {
+		if app.isLocked() {
+			terminate("Deployment is already locked", 2)
+		}
+
+		if app.writeLock() {
+			logStep("Deployment is successfully locked")
+		} else {
+			terminate("Unable to write lock", 2)
+		}
+
+		return
 	}
 
 	if cmd == "unlock" {
 		if !app.isLocked() {
-			return
+			terminate("Deployment is not locked", 2)
 		}
 
-		// Make sure to release lock after established connection
-		defer app.releaseLock()
+		if app.releaseLock() {
+			logStep("Deployment is successfully unlocked")
+		} else {
+			terminate("Unable to write lock", 2)
+		}
+
+		return
 	}
 }
 
