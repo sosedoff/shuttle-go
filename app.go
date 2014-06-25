@@ -74,6 +74,12 @@ func (app *App) writeLock() bool {
 	return app.conn.Exec(cmd).Success
 }
 
+// Get hostname of the last deployer stored in lockfile
+func (app *App) lastDeployer() string {
+	deployer := app.conn.Exec("cat " + app.target.lockfilePath).Output
+	return strings.TrimSpace(deployer)
+}
+
 // Removes deployment lock file after deployment sequience has been completed
 func (app *App) releaseLock() bool {
 	return app.conn.Exec("rm " + app.target.lockfilePath).Success

@@ -62,7 +62,10 @@ func realMain() {
 
 	if cmd == "deploy" {
 		if app.isLocked() {
-			terminate("Deployment is locked", 1)
+			deployer := app.lastDeployer()
+			message := fmt.Sprintf("Deployment is locked by %s", deployer)
+
+			terminate(message, 1)
 		}
 
 		// Create application deployment structure, directories, etc
