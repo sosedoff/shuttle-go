@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os/exec"
 	"strconv"
 	"strings"
 )
@@ -67,7 +68,10 @@ func (app *App) isLocked() bool {
 
 // Writes deployment lock file to prevent simultaneous deployments
 func (app *App) writeLock() bool {
-	return app.conn.Exec("touch " + app.target.lockfilePath).Success
+	out, _ := exec.Command("hostname").Output()
+	cmd := fmt.Sprintf("echo %s > %s", strings.TrimSpace(string(out)), app.target.lockfilePath)
+
+	return app.conn.Exec(cmd).Success
 }
 
 // Removes deployment lock file after deployment sequience has been completed
