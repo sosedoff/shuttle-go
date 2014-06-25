@@ -98,6 +98,9 @@ func realMain() {
 		if !app.isLocked() {
 			return
 		}
+
+		// Make sure to release lock after established connection
+		defer app.releaseLock()
 	}
 }
 

@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 func terminate(message string, status int) {
-	fmt.Println(message)
+	fmt.Printf("-----> ERROR: %s\n", strings.TrimSpace(message))
 	os.Exit(1)
 }
 
