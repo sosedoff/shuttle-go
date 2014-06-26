@@ -1,6 +1,6 @@
 all: build
 
-setup:
+deps:
 	go get
 
 build:

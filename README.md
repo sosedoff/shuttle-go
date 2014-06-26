@@ -9,7 +9,7 @@ Shuttle is written in Go. You need to Go >= 1.2 to compile Shuttle.
 To compile run the following command:
 
 ```
-make setup
+make deps
 make
 ```
 
