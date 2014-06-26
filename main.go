@@ -40,6 +40,10 @@ func realMain() {
 		terminate("Unable to parse config file", 1)
 	}
 
+	if !config.isValidStrategy() {
+		terminate("Invalid strategy: "+config.getStrategy(), 1)
+	}
+
 	printVersion()
 
 	target := config.NewTarget()

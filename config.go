@@ -60,3 +60,21 @@ func (conf *Config) getBranch() string {
 
 	return branch
 }
+
+func (conf *Config) getStrategy() string {
+	strategy := conf.App["strategy"]
+
+	if strategy == "" {
+		strategy = "static"
+	}
+
+	return strategy
+}
+
+func (conf *Config) isValidStrategy() bool {
+	if conf.getStrategy() == "static" {
+		return true
+	}
+
+	return false
+}
