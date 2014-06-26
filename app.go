@@ -131,6 +131,26 @@ func (app *App) cleanupCurrentRelease() {
 	app.conn.Exec("rm -rf " + app.currentReleasePath())
 }
 
+// Remove old releases
+func (app *App) cleanupOldReleases() {
+	keep := 10 // keep last 10
+	cmd := fmt.Sprintf("cd %s && ls -1 | sort -rn", app.target.releasesPath)
+	output := strings.TrimSpace(app.conn.Exec(cmd).Output)
+	releases := strings.Split(output, "\r\n")
+
+	if len(releases) < keep {
+		return
+	}
+
+	logStep("Cleaning up old releases")
+
+	for i, num := range releases {
+		if i >= keep && num != "" {
+			app.conn.Exec(fmt.Sprintf("rm -rf %s/%s", app.target.releasesPath, num))
+		}
+	}
+}
+
 func (app *App) symlinkCurrentRelease() error {
 	logStep("Linking release")
 
@@ -168,6 +188,9 @@ func (app *App) symlinkCurrentRelease() error {
 	if err := app.writeCurrentReleaseNumber(); err != nil {
 		return err
 	}
+
+	// Cleanup old releases
+	app.cleanupOldReleases()
 
 	logStep(fmt.Sprintf("Release v%d has been deployed", app.currentRelease))
 	fmt.Println("")
