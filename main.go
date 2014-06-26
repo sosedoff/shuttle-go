@@ -111,6 +111,12 @@ func realMain() {
 			terminate("Unable to symlink current release", 3)
 		}
 
+		// Cleanup old releases
+		app.cleanupOldReleases()
+
+		logStep(fmt.Sprintf("Release v%d has been deployed", app.currentRelease))
+		fmt.Println("")
+
 		return
 	}
 

@@ -189,11 +189,5 @@ func (app *App) symlinkCurrentRelease() error {
 		return err
 	}
 
-	// Cleanup old releases
-	app.cleanupOldReleases()
-
-	logStep(fmt.Sprintf("Release v%d has been deployed", app.currentRelease))
-	fmt.Println("")
-
 	return nil
 }
