@@ -191,3 +191,23 @@ func (app *App) symlinkCurrentRelease() error {
 
 	return nil
 }
+
+func (app *App) executeHookCommands(hook string, allowFailure bool) error {
+	config := app.config.Hooks[hook]
+	commands := config.([]interface{})
+
+	for _, cmd := range commands {
+		command := cmd.(string)
+
+		logStep(fmt.Sprintf("Executing %s command: %s\n", hook, command))
+		result := app.conn.Exec(command)
+
+		if !allowFailure && !result.Success {
+			return result.Error
+		}
+
+		fmt.Println(strings.TrimSpace(result.Output))
+	}
+
+	return nil
+}

@@ -109,11 +109,19 @@ func realMain() {
 			exitWithError(err)
 		}
 
+		// Execute before_symlink hooks
+		if err := app.executeHookCommands("before_link_release", false); err != nil {
+			exitWithError(err)
+		}
+
 		// If current release cannot be symlinked, remove it
 		if err = app.symlinkCurrentRelease(); err != nil {
 			app.cleanupCurrentRelease()
 			terminate("Unable to symlink current release", 3)
 		}
+
+		// Execute after_symlink hooks. This one can fail
+		app.executeHookCommands("after_link_release", true)
 
 		// Cleanup old releases
 		app.cleanupOldReleases()
