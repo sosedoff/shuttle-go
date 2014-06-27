@@ -35,7 +35,7 @@ func (app *App) currentReleasePath() string {
 }
 
 // Setup application directory structure
-func (app *App) setup() error {
+func (app *App) setup() (err error) {
 	paths := []string{
 		app.target.path,
 		app.target.releasesPath,
@@ -46,10 +46,20 @@ func (app *App) setup() error {
 		app.target.sharedPath + "/tmp",
 	}
 
+	// Execute use commands, no failures allowed
+	if err = app.runHook("before_setup", false); err != nil {
+		return
+	}
+
 	for _, path := range paths {
 		if result := app.conn.Exec("mkdir -p " + path); !result.Success {
 			return fmt.Errorf(result.Output)
 		}
+	}
+
+	// Execute user commands, no failures allowed
+	if err = app.runHook("after_setup", false); err != nil {
+		return
 	}
 
 	return nil

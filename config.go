@@ -8,6 +8,7 @@ import (
 
 var hookNames = [...]string{
 	"before_deploy",
+	"before_setup",
 	"after_setup",
 	"before_code_update",
 	"after_code_update",
