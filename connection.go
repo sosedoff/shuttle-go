@@ -5,7 +5,6 @@ import (
 	"code.google.com/p/go.crypto/ssh"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 )
 
@@ -72,6 +71,8 @@ func (conn *Connection) NewSession() (session *ssh.Session, err error) {
 }
 
 func (conn *Connection) Exec(command string) *Command {
+	debug(command)
+
 	session, err := conn.NewSession()
 	exitStatus := 0
 
@@ -81,10 +82,6 @@ func (conn *Connection) Exec(command string) *Command {
 
 	session.Stdout = &b
 	session.Stderr = &b
-
-	if conn.debug {
-		log.Println(command)
-	}
 
 	err = session.Run(command)
 
