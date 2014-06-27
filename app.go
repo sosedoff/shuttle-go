@@ -206,7 +206,7 @@ func (app *App) executeHookCommands(hook string, allowFailure bool) error {
 			return result.Error
 		}
 
-		fmt.Println(strings.TrimSpace(result.Output))
+		logOutput(result.Output)
 	}
 
 	return nil
