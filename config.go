@@ -6,6 +6,16 @@ import (
 	"launchpad.net/goyaml"
 )
 
+var hookNames = [...]string{
+	"before_deploy",
+	"after_setup",
+	"before_code_update",
+	"after_code_update",
+	"before_link_release",
+	"after_link_release",
+	"after_deploy",
+}
+
 type Config struct {
 	App    map[string]string
 	Hooks  map[string]interface{}
@@ -77,4 +87,24 @@ func (conf *Config) isValidStrategy() bool {
 	}
 
 	return false
+}
+
+func isValidHook(name string) bool {
+	for _, str := range hookNames {
+		if name == str {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (conf *Config) validateHooks() error {
+	for key, _ := range conf.Hooks {
+		if !isValidHook(key) {
+			return fmt.Errorf("Invalid hook: %s", key)
+		}
+	}
+
+	return nil
 }

@@ -44,6 +44,10 @@ func realMain() {
 		terminate("Invalid strategy: "+config.getStrategy(), 1)
 	}
 
+	if err = config.validateHooks(); err != nil {
+		exitWithError(err)
+	}
+
 	printVersion()
 
 	target := config.NewTarget()
