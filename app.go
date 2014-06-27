@@ -194,6 +194,12 @@ func (app *App) symlinkCurrentRelease() error {
 
 func (app *App) executeHookCommands(hook string, allowFailure bool) error {
 	config := app.config.Hooks[hook]
+
+	if config == nil {
+		debug("No commands defined for " + hook)
+		return nil
+	}
+
 	commands := config.([]interface{})
 
 	for _, cmd := range commands {

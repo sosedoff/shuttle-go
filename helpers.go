@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/mgutz/ansi"
+	"log"
 	"os"
 	"strings"
 )
@@ -12,6 +13,12 @@ var (
 	redPrefix    = ansi.ColorCode("red") + "----->" + ansi.ColorCode("reset")
 	yellowPrefix = ansi.ColorCode("yellow") + "----->" + ansi.ColorCode("reset")
 )
+
+func debug(message string) {
+	if options.Debug {
+		log.Println(message)
+	}
+}
 
 func terminate(message string, status int) {
 	fmt.Printf("%s ERROR: %s\n", redPrefix, strings.TrimSpace(message))
