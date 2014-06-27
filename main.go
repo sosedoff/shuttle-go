@@ -113,8 +113,8 @@ func realMain() {
 			exitWithError(err)
 		}
 
-		// Execute before_symlink hooks
-		if err := app.executeHookCommands("before_link_release", false); err != nil {
+		// Execute before_symlink hooks, no failures
+		if err := app.runHook("before_link_release", false); err != nil {
 			exitWithError(err)
 		}
 
@@ -124,15 +124,19 @@ func realMain() {
 			terminate("Unable to symlink current release", 3)
 		}
 
-		// Execute after_symlink hooks. This one can fail
-		app.executeHookCommands("after_link_release", true)
+		// Run user commands after release is linked, allow failures
+		app.runHook("after_link_release", true)
 
 		// Cleanup old releases
 		app.cleanupOldReleases()
 
+		// At this point deploy is considered completed
 		logStep(fmt.Sprintf("Release v%d has been deployed", app.currentRelease))
-		fmt.Println("")
 
+		// Run user commands after release has been deployed
+		app.runHook("after_deploy", true)
+
+		fmt.Println("")
 		return
 	}
 

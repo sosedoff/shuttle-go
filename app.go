@@ -192,7 +192,7 @@ func (app *App) symlinkCurrentRelease() error {
 	return nil
 }
 
-func (app *App) executeHookCommands(hook string, allowFailure bool) error {
+func (app *App) runHook(hook string, allowFailure bool) error {
 	config := app.config.Hooks[hook]
 
 	if config == nil {
